@@ -1,0 +1,106 @@
+
+variables:
+   dockerfilename: "Dockerfile"
+   name: "qw-admin"
+   username: "ncadmin"
+
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature"'
+      variables:
+         target_server: "s001-04-gui001"
+         docker_registry: "s000-00-nxs001:5000"
+    - when: always
+
+
+stages:
+  - test_Dockerfile
+  - test_js
+  - build
+  - push
+  - deploy
+  - clean
+
+
+image: ${docker_registry}/docker:latest
+services:
+  - ${docker_registry}/docker:20.10.12-dind-alpine3.15
+
+
+.test_hadolint: &test_hadolint
+  script:
+    - docker run --rm  ${docker_registry}/hadolint/hadolint:latest-alpine < $dockerfilename
+
+
+test1:
+  <<: *test_hadolint
+  stage: test_Dockerfile
+  only:
+    refs:
+      - feature
+    changes:
+      - $dockerfilename
+
+.test_js: &test2
+  script:
+    - docker run --tty --rm -v $(pwd):/data  ${docker_registry}/cytopia/eslint:7 .
+  allow_failure: true
+
+
+test2:
+  <<: *test2
+  stage: test_js
+  only:
+    - feature
+
+
+.build: &build
+  script:
+    -  docker build --pull -t  ${docker_registry}/${name}:$CI_COMMIT_BRANCH  --build-arg DOCKER_REGISTRY=${docker_registry}  -f ${dockerfilename} .
+
+
+build_image:
+  <<: *build
+  stage: build
+  only:
+    - feature
+
+
+
+.push: &push
+  script:
+    -  docker push ${docker_registry}/${name}:$CI_COMMIT_BRANCH
+
+push_image:
+  <<: *push
+  stage: push
+  only:
+    - feature
+
+.deploy: &deploy
+  stage : deploy
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - ssh -o StrictHostKeyChecking=no ${username}@${target_server}  " docker rm -f ${name} || true "
+    - ssh -o StrictHostKeyChecking=no ${username}@${target_server}  " docker rmi ${docker_registry}/${name}:$CI_COMMIT_BRANCH || true "
+    - ssh -o StrictHostKeyChecking=no ${username}@${target_server}  " docker run  -d --name ${name} --restart=always -p 3009:3009    ${docker_registry}/${name}:$CI_COMMIT_BRANCH"
+
+deploy_admin:
+  <<: *deploy
+  stage: deploy
+  only:
+    - feature
+
+
+cleanup:
+  stage: clean
+  script:
+    - rm -rf ./*
+    - docker rmi ${docker_registry}/${name}:$CI_COMMIT_BRANCH  || true
+  only:
+    - feature

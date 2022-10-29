@@ -1,0 +1,19 @@
+$primary: #EB4F5A;
+$primaryLight: #EB4F5A4D;
+$blue: #2975FF;
+$blue20: #2975FF33;
+$gray:#DFDFDF;
+$textDark: #1A202C;
+$white: #FFFFFF;
+$white20: rgba(255, 255, 255, 0.2);
+
+:export {
+  primary: $primary;
+  primaryLight: $primaryLight;
+  blue: $blue;
+  blue20: $blue20;
+  gray: $gray;
+  textDark:$textDark;
+  white:$white;
+  white20:$white20;
+}

@@ -1,0 +1,127 @@
+@mixin images-grid{
+  display: grid;
+  grid-gap: .8rem;
+
+  &_1{
+    & img{
+      width: unset !important;
+      z-index: 2 !important;
+    }
+    & .grid-image{
+      padding: 2rem;
+    }
+  }
+
+  &_2 {
+    grid-template-rows: 34rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &_3 {
+    grid-template-rows: 22rem 19rem;
+    grid-template-columns: 1fr 1fr;
+
+    & div:first-child {
+      grid-column: span 2;
+    }
+  }
+
+  &_4 {
+    grid-template-rows: 22rem 19rem;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    & div:first-child {
+      grid-column: span 3;
+    }
+  }
+
+  &_5 {
+    grid-template-rows: 22rem 14rem;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    & div:first-child {
+      grid-column: span 4;
+    }
+  }
+
+  &_6 {
+    grid-template-rows: 22rem 13rem 13rem;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+
+    & div {
+      grid-column: span 2;
+    }
+
+    & div:first-child {
+      grid-column: span 6;
+    }
+
+    & div:nth-child(n+2):nth-child(-n+3) {
+      grid-column: span 3;
+    }
+  }
+
+  &_7 {
+    grid-template-rows: 22rem 13rem 13rem;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    & div:first-child {
+      grid-column: span 4;
+    }
+
+    & div:nth-child(n+2):nth-child(-n+3) {
+      grid-column: span 2;
+    }
+  }
+
+  &_8 {
+    grid-template-rows: 22rem 13rem 13rem;
+    grid-template-columns: repeat(12, 1fr);
+
+    & div {
+      grid-column: span 3;
+    }
+
+    & div:first-child {
+      grid-column: span 12;
+    }
+
+    & div:nth-child(n+2):nth-child(-n+4) {
+      grid-column: span 4;
+    }
+  }
+
+  &_9 {
+    grid-template-rows: 22rem 13rem 13rem;
+    grid-template-columns: repeat(15, 1fr);
+
+    & div {
+      grid-column: span 3;
+    }
+
+    & div:first-child {
+      grid-column: span 15;
+    }
+
+    & div:nth-child(n+2):nth-child(-n+4) {
+      grid-column: span 5;
+    }
+  }
+
+  &_10 {
+    grid-template-rows: 22rem 13rem 11rem;
+    grid-template-columns: repeat(20, 1fr);
+
+    & div {
+      grid-column: span 4;
+    }
+
+    & div:first-child {
+      grid-column: span 20;
+    }
+
+    & div:nth-child(n+2):nth-child(-n+5) {
+      grid-column: span 5;
+    }
+  }
+}
